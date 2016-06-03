@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+	<property name="log-type" value="prod - " />
+	<property name="log-dir" value="./logs" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<encoder>
+			<pattern>${log-type} %date{YYYY-MM-dd HH:mm:ss.SSS} %-5level[%.15thread] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log-dir}/app.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${log-dir}/app.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+			<!-- keep one year worth of history -->
+			<maxHistory>365</maxHistory>
+		</rollingPolicy>
+		<append>true</append>
+		<encoder>
+			<pattern>${log-type} %date{YYYY-MM-dd HH:mm:ss.SSS} %-5level[%.15thread] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE"/>
+		<!--<appender-ref ref="FILE"/>-->
+	</root>
+</configuration>
