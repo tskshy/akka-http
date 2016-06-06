@@ -14,8 +14,16 @@ object JsonResponse {
 		ctx.complete(status, HttpEntity(ContentTypes.`application/json`, json))
 	}
 
+	def complete (status: StatusCode, json: JsObject): Route = {
+		complete(status, json.compactPrint)
+	}
+
 	def complete (json: String): Route = {
 		complete(StatusCodes.OK, json)
+	}
+
+	def complete (json: JsObject): Route = {
+		complete(json.compactPrint)
 	}
 
 	def error (status: StatusCode, msg: String): Route = {
