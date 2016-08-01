@@ -10,6 +10,7 @@ import conf.{Configure => c}
 
 
 object Boot {
+	/*项目启动接口*/
 	def main (args: Array[String]) {
 		implicit val system = api.ActorProvider.system
 		implicit val materializer = ActorMaterializer()
