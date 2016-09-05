@@ -35,11 +35,11 @@ object JsonResponse {
 
 	/**
 	 * 参照akka http和spray文档及其部分源码
-	 * 转换系统错误 ContentType:
+	 * 转换系统信息 ContentType:
 	 * text/html	=> application/json
 	 * string	=> {code: http-code, message: string}
 	 */
-	val `sys-error-to-json` = RejectionHandler.newBuilder()
+	val `sys-rejection-to-json` = RejectionHandler.newBuilder()
 		.handle {
 			case MalformedRequestContentRejection(msg, _) =>
 				error(BadRequest, s"The request content was malformed.")
@@ -65,4 +65,11 @@ object JsonResponse {
 		}
 		.handleNotFound(error(NotFound, "The requested resource could not be found."))
 		.result()
+
+	/**
+	 * 捕获最终未捕捉异常，转换成JSON返回
+	 */
+	val `sys-error-to-json` = ExceptionHandler {
+		case e: Exception => error(InternalServerError, s"There was an internal server error.")
+	}
 }

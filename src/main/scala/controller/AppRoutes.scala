@@ -8,8 +8,10 @@ import app.{Readme}
 
 object AppRoutes {
 	val route = DebuggingDirectives.logRequest(">", Logging.InfoLevel) {
-		handleRejections(api.JsonResponse.`sys-error-to-json`) {
-			Readme.route
+		handleExceptions(api.JsonResponse.`sys-error-to-json`) {
+			handleRejections(api.JsonResponse.`sys-rejection-to-json`) {
+				Readme.route
+			}
 		}
 	}
 }

@@ -29,7 +29,6 @@ object Readme {
 				 select name from user
 			   """.as[String]
 		val f: Future[Seq[String]] = DB.with_connection_mysql.run(action)
-
 		onSuccess(f) { res =>
 			val info = res.map {e =>
 				JsObject("name" -> JsString(e.toString()))
