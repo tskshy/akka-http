@@ -4,12 +4,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.{DB, JsonResponse => jr}
 import org.slf4j.{Logger, LoggerFactory}
-import slick.driver.MySQLDriver.api.actionBasedSQLInterpolation
 import spray.json.{JsObject, JsString}
 import spray.json.DefaultJsonProtocol._
 
 import scala.concurrent.{Future}
-
 
 
 object Readme {
@@ -24,6 +22,7 @@ object Readme {
 		}
 
 	private def dbtest: Route = {
+		import slick.driver.MySQLDriver.api.actionBasedSQLInterpolation
 		val action =
 			sql"""
 				 select name from user
