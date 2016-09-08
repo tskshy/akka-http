@@ -1,5 +1,10 @@
 lazy val root = (project in file("."))
-	.settings(Common.settings)
+	.settings(Build.`common-setting`)
+	.settings(
+		name	:= "server",
+		libraryDependencies ++= Build.`lib-dependencies`
+	)
+	.settings(Build.`task-setting`)
 	.settings(Seq(
 		/**
 		 * plugin: sbt-revolver setting:
@@ -42,9 +47,5 @@ lazy val root = (project in file("."))
 		 **/
 		bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
 	))
-	.settings(
-		name	:= "server",
-		libraryDependencies ++= Dependencies.server
-	)
 
 

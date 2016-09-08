@@ -1,19 +1,17 @@
 import sbt._
 import Keys._
 
-object Common {
-	lazy val settings: Seq[Def.Setting[_]] = Seq(
+object Build {
+	lazy val `common-setting`: Seq[Def.Setting[_]] = Seq(
 		version		:= "0.0.1-M",
 		scalaVersion	:= "2.11.8",
 		organization	:= "io.github.tskshy",
 		//ivyScala	:= ivyScala.value map { _.copy(overrideScalaVersion = true) },
 		scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-feature", "-language:postfixOps")
 	)
-}
 
-object Dependencies {
-	lazy val `akka-v` = "2.4.9"
-	lazy val server = Seq(
+	lazy private val `akka-v` = "2.4.9"
+	lazy val `lib-dependencies` = Seq(
 		/*http support*/
 		"com.typesafe.akka" %% "akka-http-core" % `akka-v`,
 		"com.typesafe.akka" %% "akka-http-experimental" % `akka-v`,
@@ -31,16 +29,18 @@ object Dependencies {
 		"com.typesafe.slick" %% "slick" % "3.1.1",
 		"mysql" % "mysql-connector-java" % "5.1.38"
 	)
-}
 
-object MyBuild extends Build {
-	val task_test = taskKey[Unit]("test")
-
-	//settings
-	lazy val task_test_setting = Seq(
-		task_test := {
-			println("test001")
+	/*task key setting*/
+	lazy val `task-setting` = Seq(
+		apptest := {
+			println("put your code for task")
+		},
+		apptest1 := {
+			println("put your code for task1")
 		}
 	)
+
+	lazy val apptest = taskKey[Unit]("application task test")
+	lazy val apptest1 = taskKey[Unit]("application task test")
 }
 

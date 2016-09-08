@@ -3,6 +3,7 @@
 *.log
 
 .idea
+logs/
 
 # sbt specific
 .cache
