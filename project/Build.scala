@@ -10,7 +10,7 @@ object Build {
 		scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-feature", "-language:postfixOps")
 	)
 
-	lazy private val `akka-v` = "2.4.9"
+	lazy private val `akka-v` = "2.4.10"
 	lazy val `lib-dependencies` = Seq(
 		/*http support*/
 		"com.typesafe.akka" %% "akka-http-core" % `akka-v`,
