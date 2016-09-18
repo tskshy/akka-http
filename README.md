@@ -1,2 +1,2 @@
 # akka-http
-akka http demo.
+基于akka-http的rest服务
