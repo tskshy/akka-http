@@ -19,9 +19,9 @@ object Configure {
 	 */
 
 	/**
-	 * 想通过配置文件定位配置文件的位置
-	 * 无奈这涉及到“先有鸡还是先有蛋”
-	 * 哈哈 竟然能遇到一个这么有哲学的问题
+	 * 加载build.sbt里设置的配置文件
+	 * 开发环境：application.deve.conf
+	 * 运行环境：application.prod.conf
 	 */
 	val info: Config = ConfigFactory.defaultApplication()
 }

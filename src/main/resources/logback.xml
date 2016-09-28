@@ -6,7 +6,7 @@
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<target>System.out</target>
 		<encoder>
-			<pattern>${log-type} %date{YYYY-MM-dd HH:mm:ss.SSS} %-5level[%.15thread] %msg%n</pattern>
+			<pattern>${log-type} %date{YYYY-MM-dd HH:mm:ss.SSS} %-5level[%.15thread] %logger: %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -20,7 +20,7 @@
 		</rollingPolicy>
 		<append>true</append>
 		<encoder>
-			<pattern>${log-type} %date{YYYY-MM-dd HH:mm:ss.SSS} %-5level[%.15thread] %msg%n</pattern>
+			<pattern>${log-type} %date{YYYY-MM-dd HH:mm:ss.SSS} %-5level[%.15thread] %logger: %msg%n</pattern>
 		</encoder>
 	</appender>
 
