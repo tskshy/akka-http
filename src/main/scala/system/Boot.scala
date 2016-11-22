@@ -17,7 +17,11 @@ object Boot {
 		// needed for the future flatMap/onComplete in the end
 		implicit val executionContext = system.dispatcher
 
-		val server = Http().bindAndHandle(AppRoutes.route, c.info.getString("http.interface"), c.info.getInt("http.port"))
+		val server = Http().bindAndHandle(
+			AppRoutes.route,
+			c.`http.interface`,
+			c.`http.port`
+		)
 
 		val log = LoggerFactory.getLogger(Boot.getClass)
 		server.onComplete {

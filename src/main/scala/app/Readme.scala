@@ -2,12 +2,12 @@ package app
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import api.{DB, JsonResponse => jr}
+import api.{ActorProvider, DB, JsonResponse => jr}
 import org.slf4j.{Logger, LoggerFactory}
-import spray.json.{JsObject, JsString}
+import spray.json.{JsObject, JsString, JsonParser}
 import spray.json.DefaultJsonProtocol._
 
-import scala.concurrent.{Future}
+import scala.concurrent.Future
 
 
 object Readme {
@@ -19,7 +19,19 @@ object Readme {
 			jr.complete(s"""hello""")
 		} ~ (path("db") & get) {
 			dbtest
+		} ~ (path("remote") & get) {
+			val actor = ActorProvider.system.actorSelection("akka.tcp://RemoteServer@127.0.0.1:2552/user/remote_actor")
+			println(actor)
+			actor ! "hello remote"
+			jr.complete("""{"a":"b"}""")
+		} ~ (path("reject") & get) {
+			reject()
+
 		}
+
+	var r: Route = {ctx =>
+		ctx.complete("")
+	}
 
 	private def dbtest: Route = {
 		import slick.driver.MySQLDriver.api.actionBasedSQLInterpolation

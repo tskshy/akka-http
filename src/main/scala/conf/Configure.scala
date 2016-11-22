@@ -24,4 +24,7 @@ object Configure {
 	 * 运行环境：application.prod.conf
 	 */
 	val info: Config = ConfigFactory.defaultApplication()
+
+	lazy val `http.interface` = info.getString("http.interface")
+	lazy val `http.port` = info.getInt("http.port")
 }

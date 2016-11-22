@@ -15,6 +15,8 @@ object Build {
 		/*http support*/
 		"com.typesafe.akka" %% "akka-http-core" % `akka-v`,
 		"com.typesafe.akka" %% "akka-http-experimental" % `akka-v`,
+		//"com.typesafe.akka" %% "akka-http-experimental" % "3.0.0-RC1",
+
 
 		/*json support*/
 		"com.typesafe.akka" %% "akka-http-spray-json-experimental" % `akka-v`,
@@ -27,7 +29,10 @@ object Build {
 
 		/*database connection pool support*/
 		"com.typesafe.slick" %% "slick" % "3.1.1",
-		"mysql" % "mysql-connector-java" % "5.1.38"
+		"mysql" % "mysql-connector-java" % "5.1.38",
+
+		/*remote actor support*/
+		"com.typesafe.akka" %% "akka-remote" % `akka-v`
 	)
 
 	/*task key setting*/
