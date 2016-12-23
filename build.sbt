@@ -23,7 +23,12 @@ lazy val root = (project in file("."))
 		/**
 		 * configure for logback when developing
 		 **/
-		javaOptions in reStart += s"-Dlogback.configurationFile=./src/main/resources/logback.xml"
+		javaOptions in reStart += s"-Dlogback.configurationFile=./src/main/resources/logback.xml",
+
+		/**
+		 * resource directory
+		 **/
+		javaOptions in reStart += s"-Dresources.Directory=./src/main/resources"
 	))
 	/**
 	 * plugin: sbt-native-package setting
@@ -45,7 +50,11 @@ lazy val root = (project in file("."))
 		/**
 		 * configure for logback
 		 **/
-		bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
+		bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml"""",
+		/**
+		  * resource directory
+		  **/
+		bashScriptExtraDefines += """addJava "-Dresources.Directory=${app_home}/../conf""""
 	))
 
 

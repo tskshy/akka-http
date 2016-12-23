@@ -17,16 +17,18 @@ object Boot {
 		// needed for the future flatMap/onComplete in the end
 		implicit val executionContext = system.dispatcher
 
-		val server = Http().bindAndHandle(
-			AppRoutes.route,
+		val `http-server` = Http().bindAndHandle(
+			AppRoutes.route0,
 			c.`http.interface`,
 			c.`http.port`
 		)
 
+		//TODO https server
+
 		val log = LoggerFactory.getLogger(Boot.getClass)
-		server.onComplete {
-			case Success(msg) => log.info("server start: " + msg)
-			case Failure(ex) => log.error("server has no started: " + ex.toString)
+		`http-server`.onComplete {
+			case Success(msg) => log.info("HTTP SERVER / START SUCCESS: " + msg)
+			case Failure(ex) => log.error("HTTP SERVER / START FAILURE: " + ex.toString)
 		}
 	}
 }

@@ -25,6 +25,7 @@ object Configure {
 	 */
 	val info: Config = ConfigFactory.defaultApplication()
 
+	lazy val ip = info.getString("http.ip")
 	lazy val `http.interface` = info.getString("http.interface")
 	lazy val `http.port` = info.getInt("http.port")
 }

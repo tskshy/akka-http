@@ -1,10 +1,11 @@
 package app
 
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.{ActorProvider, DB, JsonResponse => jr}
 import org.slf4j.{Logger, LoggerFactory}
-import spray.json.{JsObject, JsString, JsonParser}
+import spray.json.{JsNumber, JsObject, JsString, JsonParser}
 import spray.json.DefaultJsonProtocol._
 
 import scala.concurrent.Future
@@ -16,15 +17,19 @@ object Readme {
 	val route: Route =
 		(path("readme") & get) {
 			log.info("test")
-			jr.complete(s"""hello""")
+			complete(s"""hello""")
+
+			//api.JsonResponse.result(spray.json.JsArray(JsString("a"), JsNumber(2)))
+			//api.JsonResponse.reject(StatusCodes.NotFound, 12, "hello", "world")
 		} ~ (path("db") & get) {
 			dbtest
 		} ~ (path("remote") & get) {
 			val actor = ActorProvider.system.actorSelection("akka.tcp://RemoteServer@127.0.0.1:2552/user/remote_actor")
 			println(actor)
 			actor ! "hello remote"
-			jr.complete("""{"a":"b"}""")
+			complete("""{"a":"b"}""")
 		} ~ (path("reject") & get) {
+			log.info("reject ...")
 			reject()
 
 		}
@@ -44,7 +49,7 @@ object Readme {
 			val info = res.map {e =>
 				JsObject("name" -> JsString(e.toString()))
 			}
-			jr.complete(info.toJson.compactPrint)
+			complete(info.toJson.compactPrint)
 		}
 	}
 }
