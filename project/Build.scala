@@ -47,12 +47,12 @@ object Build {
 
 		/*document support*/
 		/*https://github.com/swagger-akka-http/swagger-akka-http*/
-		"com.github.swagger-akka-http" %% "swagger-akka-http" % "0.8.1",
+		//"com.github.swagger-akka-http" %% "swagger-akka-http" % "0.8.1",
 
 		/*[warn] Multiple dependencies with the same organization/name but different versions. To avoid conflict, pick one version: [warn] * org.scala-lang:scala-reflect:(2.11.2, 2.11.8)*/
-		"org.scala-lang" % "scala-reflect" % "2.11.8",
+		"org.scala-lang" % "scala-reflect" % "2.11.8"
 
-		"ch.megard" %% "akka-http-cors" % "0.1.10"
+		//"ch.megard" %% "akka-http-cors" % "0.1.10"
 	)
 
 	/*task key setting*/
