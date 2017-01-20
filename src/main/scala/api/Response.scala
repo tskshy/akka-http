@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._
 import org.slf4j.LoggerFactory
-import spray.json.{JsNumber, JsObject, JsString, JsValue}
+import spray.json.{JsObject, JsString, JsValue}
 
 
 /**
@@ -13,10 +13,9 @@ import spray.json.{JsNumber, JsObject, JsString, JsValue}
 object JsonResponse {
 	private val logger = LoggerFactory.getLogger(JsonResponse.getClass)
 
-	private val `model-status` = "status" /*http response code e.g.: 404*/
-	private val `model-code` = "code" /*(concat status . number) e.g.: 404.12*/
+	private val `model-status-code` = "status-code" /*(concat status . number) e.g.: 404.12*/
 	private val `model-message` = "message" /*http message*/
-	private val `model-developer-message` = "developer-message" /*message with program exception, error, etc.*/
+	private val `model-exception` = "exception" /*message with program exception, error, etc.*/
 	private val `model-data` = "data" /*response when everything is OK*/
 
 	private def complete (status: StatusCode, json: JsValue): Route = { ctx =>
@@ -27,10 +26,9 @@ object JsonResponse {
 		complete(
 			StatusCodes.OK,
 			JsObject(
-				`model-status` -> JsNumber(StatusCodes.OK.intValue),
-				`model-code` -> JsString(s"200.0"),
+				`model-status-code` -> JsString(s"${StatusCodes.OK.intValue}.0"),
 				`model-message` -> JsString(StatusCodes.OK.reason),
-				`model-developer-message` -> JsString(StatusCodes.OK.defaultMessage),
+				`model-exception` -> JsString(StatusCodes.OK.defaultMessage),
 				`model-data` -> json
 			)
 		)
@@ -41,18 +39,17 @@ object JsonResponse {
 	}
 
 	def reject (
-			statusCode: StatusCode,
-			code: Int = 0,
-			message: String = "No message provided",
-			`developer-message`: String = "No message provided"): Route = {
+		statusCode: StatusCode,
+		code: Int = 0,
+		message: String = "No message provided",
+		exception: String = "No exception provided"): Route = {
 
 		complete(
 			statusCode,
 			JsObject(
-				`model-status` -> JsNumber(statusCode.intValue()),
-				`model-code` -> JsString(s"${statusCode.intValue()}.${code}"),
+				`model-status-code` -> JsString(s"${statusCode.intValue()}.${code}"),
 				`model-message` -> JsString(message),
-				`model-developer-message` -> JsString(`developer-message`)
+				`model-exception` -> JsString(exception)
 			)
 		)
 	}
@@ -61,7 +58,7 @@ object JsonResponse {
 		reject(statusCode, 0, message, exception)
 	}
 
-	private val unknown_rejection = new Throwable("No detailed rejection-message information provided from AKKA HTTP")
+	private val unknown_rejection = new Throwable("No Exception-Message.")
 
 	/**
 	 * 参照akka http和spray文档及其部分源码
