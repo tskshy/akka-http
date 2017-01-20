@@ -1,10 +1,10 @@
-package controller
+package routes
 
 import akka.event.Logging
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.DebuggingDirectives
-import app.User
+import app.controller.User
 
 object AppRoutes {
 	val route0 = DebuggingDirectives.logRequest(">", Logging.InfoLevel) {
@@ -18,7 +18,7 @@ object AppRoutes {
 	private val v1 = "v1"
 
 	val route1: Route =
-		User(v1 /)
+		User(v1 / "user")
 
 
 }

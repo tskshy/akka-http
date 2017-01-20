@@ -1,7 +1,7 @@
 package test
 
-import model.InputModels.TestModel
-import model.Models
+import app.model.InputModels.TestModel
+import app.model.Models
 import spray.json.JsonParser
 
 

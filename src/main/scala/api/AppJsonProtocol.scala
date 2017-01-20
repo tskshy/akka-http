@@ -1,8 +1,8 @@
 package api
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import model.InputModels.{TestModel, UserModel}
-import model.Models
+import app.model.InputModels.{TestModel, UserModel}
+import app.model.Models
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsArray, JsFalse, JsNull, JsNumber, JsObject, JsString, JsTrue, JsValue, RootJsonFormat}
 
 /**

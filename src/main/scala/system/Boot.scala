@@ -2,11 +2,11 @@ package system
 
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import controller.AppRoutes
 import org.slf4j.LoggerFactory
 
 import scala.util.{Failure, Success}
 import conf.{Configure => c}
+import routes.AppRoutes
 
 
 object Boot {

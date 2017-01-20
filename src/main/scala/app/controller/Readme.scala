@@ -1,12 +1,11 @@
-package app
+package app.controller
 
-import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import api.{ActorProvider, DB, JsonResponse => jr}
 import org.slf4j.{Logger, LoggerFactory}
-import spray.json.{JsNumber, JsObject, JsString, JsonParser}
 import spray.json.DefaultJsonProtocol._
+import spray.json.{JsObject, JsString}
 
 import scala.concurrent.Future
 

@@ -1,4 +1,4 @@
-package model
+package app.model
 
 import spray.json.{DeserializationException, JsFalse, JsNull, JsNumber, JsString, JsTrue, JsValue}
 

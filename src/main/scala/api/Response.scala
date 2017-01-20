@@ -13,7 +13,8 @@ import spray.json.{JsObject, JsString, JsValue}
 object JsonResponse {
 	private val logger = LoggerFactory.getLogger(JsonResponse.getClass)
 
-	private val `model-status-code` = "status-code" /*(concat status . number) e.g.: 404.12*/
+	private val `default-code` = 0 /*user-defined default error code*/
+	private val `model-status-code` = "status-code" /*(concat http-status . error-number) e.g.: 404.12*/
 	private val `model-message` = "message" /*http message*/
 	private val `model-exception` = "exception" /*message with program exception, error, etc.*/
 	private val `model-data` = "data" /*response when everything is OK*/
@@ -22,40 +23,49 @@ object JsonResponse {
 		ctx.complete(status, HttpEntity(ContentTypes.`application/json`, json.prettyPrint + "\n"))
 	}
 
-	def result (json: JsValue): Route = {
-		complete(
-			StatusCodes.OK,
-			JsObject(
-				`model-status-code` -> JsString(s"${StatusCodes.OK.intValue}.0"),
-				`model-message` -> JsString(StatusCodes.OK.reason),
-				`model-exception` -> JsString(StatusCodes.OK.defaultMessage),
-				`model-data` -> json
+	private def complete1 (
+		json: JsValue = null,
+		statusCode: StatusCode = StatusCodes.OK,
+		code: Int = `default-code`,
+		message: String = "No message provide",
+		exception: String = "No exception message provide"
+	): Route = {
+		if (json == null) {
+			complete(
+				statusCode,
+				JsObject(
+					`model-status-code` -> JsString(s"${statusCode.intValue()}.${code}"),
+					`model-message` -> JsString(message),
+					`model-exception` -> JsString(exception)
+				)
 			)
-		)
+		} else {
+			complete(
+				statusCode,
+				JsObject(
+					`model-status-code` -> JsString(s"${StatusCodes.OK.intValue}.${`default-code`}"),
+					`model-message` -> JsString(StatusCodes.OK.reason),
+					`model-exception` -> JsString(StatusCodes.OK.defaultMessage),
+					`model-data` -> json
+				)
+			)
+		}
+	}
+
+	def result (json: JsValue): Route = {
+		complete1(json, StatusCodes.OK, `default-code`, StatusCodes.OK.reason, "No Exception-Message")
 	}
 
 	def result (): Route = {
-		reject(StatusCodes.OK, 0, StatusCodes.OK.reason, StatusCodes.OK.defaultMessage)
+		complete1(null, StatusCodes.OK, `default-code`, StatusCodes.OK.reason, "No Exception-Message")
 	}
 
-	def reject (
-		statusCode: StatusCode,
-		code: Int = 0,
-		message: String = "No message provided",
-		exception: String = "No exception provided"): Route = {
-
-		complete(
-			statusCode,
-			JsObject(
-				`model-status-code` -> JsString(s"${statusCode.intValue()}.${code}"),
-				`model-message` -> JsString(message),
-				`model-exception` -> JsString(exception)
-			)
-		)
+	def reject (statusCode: StatusCode, code: Int = `default-code`, message: String = "No message provide", exception: String = "No exception message provide"): Route = {
+		complete1(null, statusCode, code, message, exception)
 	}
 
 	private def `sys-error`(statusCode: StatusCode, message: String, exception: String): Route = {
-		reject(statusCode, 0, message, exception)
+		reject(statusCode, `default-code`, message, exception)
 	}
 
 	private val unknown_rejection = new Throwable("No Exception-Message.")
