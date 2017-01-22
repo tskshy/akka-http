@@ -14,10 +14,12 @@ object JsonResponse {
 	private val logger = LoggerFactory.getLogger(JsonResponse.getClass)
 
 	private val `default-code` = 0 /*user-defined default error code*/
-	private val `model-status-code` = "status-code" /*(concat http-status . error-number) e.g.: 404.12*/
+
+	private val `model-status-code` = "status-code" /*(concat http-status-code . error-number) e.g.: 404.12*/
 	private val `model-message` = "message" /*http message*/
-	private val `model-exception` = "exception" /*message with program exception, error, etc.*/
+
 	private val `model-data` = "data" /*response when everything is OK*/
+	private val `model-exception` = "exception" /*message with program exception, error, etc.*/
 
 	private def complete (status: StatusCode, json: JsValue): Route = { ctx =>
 		ctx.complete(status, HttpEntity(ContentTypes.`application/json`, json.prettyPrint + "\n"))
@@ -27,10 +29,29 @@ object JsonResponse {
 		json: JsValue = null,
 		statusCode: StatusCode = StatusCodes.OK,
 		code: Int = `default-code`,
-		message: String = "No message provide",
-		exception: String = "No exception message provide"
+		message: String = "No Message",
+		exception: String = "No Exception-Message"
 	): Route = {
-		if (json == null) {
+		if (statusCode.intValue() == StatusCodes.OK.intValue) {
+			if (json == null) {
+				complete(
+					statusCode,
+					JsObject(
+						`model-status-code` -> JsString(s"${statusCode.intValue()}.${code}"),
+						`model-message` -> JsString(message)
+					)
+				)
+			} else {
+				complete(
+					statusCode,
+					JsObject(
+						`model-status-code` -> JsString(s"${StatusCodes.OK.intValue}.${`default-code`}"),
+						`model-message` -> JsString(StatusCodes.OK.reason),
+						`model-data` -> json
+					)
+				)
+			}
+		} else {
 			complete(
 				statusCode,
 				JsObject(
@@ -39,29 +60,20 @@ object JsonResponse {
 					`model-exception` -> JsString(exception)
 				)
 			)
-		} else {
-			complete(
-				statusCode,
-				JsObject(
-					`model-status-code` -> JsString(s"${StatusCodes.OK.intValue}.${`default-code`}"),
-					`model-message` -> JsString(StatusCodes.OK.reason),
-					`model-exception` -> JsString(StatusCodes.OK.defaultMessage),
-					`model-data` -> json
-				)
-			)
 		}
+
 	}
 
 	def result (json: JsValue): Route = {
-		complete1(json, StatusCodes.OK, `default-code`, StatusCodes.OK.reason, "No Exception-Message")
+		complete1(json = json, statusCode = StatusCodes.OK, code = `default-code`, message = StatusCodes.OK.reason)
 	}
 
 	def result (): Route = {
-		complete1(null, StatusCodes.OK, `default-code`, StatusCodes.OK.reason, "No Exception-Message")
+		complete1(statusCode = StatusCodes.OK, code = `default-code`, message = StatusCodes.OK.reason)
 	}
 
-	def reject (statusCode: StatusCode, code: Int = `default-code`, message: String = "No message provide", exception: String = "No exception message provide"): Route = {
-		complete1(null, statusCode, code, message, exception)
+	def reject (statusCode: StatusCode, code: Int = `default-code`, message: String = "No Message", exception: String = "No Exception-Message"): Route = {
+		complete1(statusCode = statusCode, code = code, message = message, exception = exception)
 	}
 
 	private def `sys-error`(statusCode: StatusCode, message: String, exception: String): Route = {
@@ -126,12 +138,8 @@ object JsonResponse {
 					unknown_rejection.getMessage
 				)
 
-			case reject: Rejection =>
-				`sys-error`(
-					NotImplemented,
-					s"${NotImplemented.reason} for this rejection.",
-					s"Not handle this rejection: ${reject.toString}"
-				)
+			/*Add more rejections*/
+
 		}
 		.handleAll[MethodRejection] { rejections =>
 			val method = rejections.map(_.supported.name())
@@ -141,8 +149,17 @@ object JsonResponse {
 				unknown_rejection.getMessage
 			)
 		}
+		.handle {
+			case reject: Rejection =>
+				`sys-error`(
+					NotImplemented,
+					s"""<${NotImplemented.reason}> for this rejection.""",
+					s"Not handle this rejection: ${reject.toString}"
+				)
+		    }
 		.handleNotFound(`sys-error`(NotFound, "The requested resource could not be found.", unknown_rejection.getMessage))
 		.result()
+
 
 	/**
 	 * 捕获最终未捕捉异常，转换成JSON返回

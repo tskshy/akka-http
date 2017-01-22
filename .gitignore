@@ -4,6 +4,7 @@
 
 .idea
 logs/
+docs/
 
 # sbt specific
 .cache
