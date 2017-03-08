@@ -1,8 +1,9 @@
 package app.model
 
 import spray.json.{DeserializationException, JsFalse, JsNull, JsNumber, JsString, JsTrue, JsValue}
-
 import scala.reflect.ClassTag
+
+import spray.json.DefaultJsonProtocol._
 
 
 object Models {
@@ -31,6 +32,11 @@ object Models {
 }
 
 object InputModels {
+	/**信息类型*/
+	implicit val share_info_format = jsonFormat3(ShareInfoModel)
+	final case class ShareInfoModel(title: String, link_url: String, content: String) {
+
+	}
 
 	case class TestModel private (val test0: String, val test1: Int) {
 	}

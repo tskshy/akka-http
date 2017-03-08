@@ -28,4 +28,6 @@ object Configure {
 	lazy val ip = info.getString("http.ip")
 	lazy val `http.interface` = info.getString("http.interface")
 	lazy val `http.port` = info.getInt("http.port")
+
+	lazy val version = info.getString("version")
 }

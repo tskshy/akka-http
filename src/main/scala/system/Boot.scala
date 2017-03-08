@@ -23,7 +23,7 @@ object Boot {
 			c.`http.port`
 		)
 
-		//TODO https server
+		//TODO can add https server
 
 		val log = LoggerFactory.getLogger(Boot.getClass)
 		`http-server`.onComplete {

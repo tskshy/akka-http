@@ -25,10 +25,10 @@ object User {
 					"user_id" -> JsNumber(user_id)
 				)
 				JR.result(json)
-			} //~
-			//(delete & path(IntNumber)) { user_id =>
-			//	JR.result()
-			//}
+			} ~
+			(delete & path(IntNumber)) { user_id =>
+				JR.result()
+			}
 		}
 	}
 
