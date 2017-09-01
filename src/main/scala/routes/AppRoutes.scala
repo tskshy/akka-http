@@ -4,7 +4,7 @@ import akka.event.Logging
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.DebuggingDirectives
-import app.controller.{ShareInformation, User, Version}
+import app.controller.{ShareInformation, User, Version, Dict}
 
 object AppRoutes {
 	val route0 = DebuggingDirectives.logRequest(">", Logging.InfoLevel) {
@@ -20,7 +20,6 @@ object AppRoutes {
 	val route1: Route =
 		Version("version") ~
 		User(v1 / "user") ~
-		ShareInformation(v1 / "info")
-
-
+		ShareInformation(v1 / "info") ~
+		Dict(v1 / "dict")
 }
