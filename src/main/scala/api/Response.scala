@@ -14,6 +14,8 @@ object JsonResponse {
 	private val logger = LoggerFactory.getLogger(JsonResponse.getClass)
 
 	private val `default-code` = 0 /*user-defined default error code*/
+	private val `default-message` = "no message"
+	private val `default-exception-message` = "no exception message"
 
 	private val `model-status-code` = "status-code" /*(concat http-status-code . error-number) e.g.: 404.12*/
 	private val `model-message` = "message" /*http message*/
@@ -29,8 +31,8 @@ object JsonResponse {
 		json: JsValue = null,
 		statusCode: StatusCode = StatusCodes.OK,
 		code: Int = `default-code`,
-		message: String = "No Message",
-		exception: String = "No Exception-Message"
+		message: String = `default-message`,
+		exception: String = `default-exception-message`
 	): Route = {
 		if (statusCode.intValue() == StatusCodes.OK.intValue) {
 			if (json == null) {
@@ -72,7 +74,7 @@ object JsonResponse {
 		complete1(statusCode = StatusCodes.OK, code = `default-code`, message = StatusCodes.OK.reason)
 	}
 
-	def reject (statusCode: StatusCode, code: Int = `default-code`, message: String = "No Message", exception: String = "No Exception-Message"): Route = {
+	def reject (statusCode: StatusCode, code: Int = `default-code`, message: String = `default-message`, exception: String = `default-exception-message`): Route = {
 		complete1(statusCode = statusCode, code = code, message = message, exception = exception)
 	}
 
@@ -80,7 +82,7 @@ object JsonResponse {
 		reject(statusCode, `default-code`, message, exception)
 	}
 
-	private val unknown_rejection = new Throwable("No Exception-Message.")
+	private val unknown_rejection = new Throwable(`default-exception-message`)
 
 	/**
 	 * 参照akka http和spray文档及其部分源码
@@ -139,7 +141,6 @@ object JsonResponse {
 				)
 
 			/*Add more rejections*/
-
 		}
 		.handleAll[MethodRejection] { rejections =>
 			val method = rejections.map(_.supported.name())
@@ -157,7 +158,9 @@ object JsonResponse {
 					s"Not handle this rejection: ${reject.toString}"
 				)
 		    }
-		.handleNotFound(`sys-error`(NotFound, "The requested resource could not be found.", unknown_rejection.getMessage))
+		.handleNotFound{
+			`sys-error`(NotFound, "The requested resource could not be found.", unknown_rejection.getMessage)
+		}
 		.result()
 
 
